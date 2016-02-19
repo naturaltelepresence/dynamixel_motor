@@ -4,9 +4,10 @@ motor_controller:
         module: joint_position_controller
         type: JointPositionController
     joint_name: spin_joint
-    joint_speed: 11.0
+    joint_speed: 2.0
     motor:
-        id: 2
+        id: 1
         init: 0
         min: 0
         max: 1023
+
