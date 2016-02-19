@@ -1,10 +1,5 @@
 <launch>
 
-<node name="project" pkg="laser_scanner" type="project" ns="laser_scanner" output="screen">
-  <remap from="/laser_scanner/project/laser/scan1" to="/laser/scan1"/>
-  <remap from="/laser_scanner/project/laser/scan2" to="/laser/scan2"/>
-</node>
-
 <node name="gimbal_driver" pkg="dynamixel_controllers" type="run_gimbal.py" output="screen">
   <param name="max_angle" type="double" value="30.0"/>
   <param name="min_angle" type="double" value="-15.0"/>
