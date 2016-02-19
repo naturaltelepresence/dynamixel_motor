@@ -23,25 +23,28 @@ class gimbal(object):
         self.max_angle = rospy.get_param('~max_angle', 30.0)
         self.min_angle = rospy.get_param('~min_angle', -15.0)
         self.offset_angle = rospy.get_param('~offset_angle', 150.0)
+        self.frame_id = rospy.get_param('~frame_id', 'gimbal')
+        self.child_frame_id = rospy.get_param('~child_frame_id', 'laser')
+        self.tol = np.deg2rad(5.0)
 
 
         self.max_angle = np.deg2rad(self.max_angle)
         self.min_angle = np.deg2rad(self.min_angle)
         self.offset_angle = np.deg2rad(self.offset_angle)
 
-        self.setpoint = self.min_angle + self.offset_angle
+        assert self.max_angle > self.min_angle
+
+        self.setpoint = self.offset_angle + self.max_angle + self.tol
 
         rospy.spin()
 
     def motor_cb(self, data):
         theta = data.current_pos
 
-        if not self.approx_equals(self.offset_angle + self.min_angle, self.setpoint):
-            if self.approx_equals(self.offset_angle + self.max_angle, theta):
-                self.setpoint = (self.offset_angle + self.min_angle)
-        else:
-            if self.approx_equals(self.offset_angle + self.min_angle, theta):
-                self.setpoint = (self.offset_angle + self.max_angle)
+        if theta > (self.offset_angle + self.max_angle):
+            self.setpoint = self.offset_angle + self.min_angle - self.tol
+        elif theta < (self.offset_angle + self.min_angle):
+            self.setpoint = self.offset_angle + self.max_angle + self.tol
 
         pitch = self.offset_angle - theta
 
@@ -51,7 +54,7 @@ class gimbal(object):
 
         self.tf_pub.sendTransform((x, y, z), tf.transformations.quaternion_from_euler(0, pitch, 0),
                                   rospy.Time.now(),
-                                  "laser", "world")
+                                  self.child_frame_id, self.frame_id)
         self.motor_pub.publish(self.setpoint)
 
     def approx_equals(self, setpoint, theta, tolerance = np.deg2rad(2.0)):
