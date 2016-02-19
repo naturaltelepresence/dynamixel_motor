@@ -57,16 +57,6 @@ class gimbal(object):
                                   self.child_frame_id, self.frame_id)
         self.motor_pub.publish(self.setpoint)
 
-    def approx_equals(self, setpoint, theta, tolerance = np.deg2rad(2.0)):
-        error = np.abs(setpoint - theta)
-
-        if error <= tolerance:
-            return True
-        else:
-            return False
-
-
-
 if __name__ == '__main__':
     node = gimbal()
     try:
