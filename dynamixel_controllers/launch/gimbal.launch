@@ -1,0 +1,8 @@
+<launch>
+
+<include file="$(find dynamixel_controllers)/launch/dynamixel_manager.launch"/>
+<include file="$(find dynamixel_controllers)/launch/motor_x.launch"/>
+<include file="$(find dynamixel_controllers)/launch/motor_y.launch"/>
+<include file="$(find dynamixel_controllers)/launch/motor_z.launch"/>
+
+</launch>
